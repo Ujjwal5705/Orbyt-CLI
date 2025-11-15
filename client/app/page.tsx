@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
@@ -13,12 +12,12 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!isPending && (!data?.session || !data?.user)) {
+    if (!isPending && !data?.user) {
       router.push("/sign-in")
     }
   }, [isPending, data, router])
 
-  if (isPending || (!data?.session && !data?.user)) {
+  if (isPending) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
         <Spinner />
