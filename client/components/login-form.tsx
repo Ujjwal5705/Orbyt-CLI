@@ -7,10 +7,10 @@ import { Card, CardContent } from "./ui/card";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
-
 export const LoginForm = () => {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     return (
         <div className="flex flex-col gap-6 justify-center items-center">
@@ -23,14 +23,24 @@ export const LoginForm = () => {
                     <CardContent>
                         <div className="grid gap-6">
                             <div className="flex flex-col gap-4">
+                                {error && (
+                                    <div className="text-red-500 text-sm">{error}</div>
+                                )}
                                 <Button
                                     variant={"outline"}
                                     className="w-full h-full"
                                     type="button"
-                                    onClick={() => authClient.signIn.social({
-                                        provider: "github",
-                                        callbackURL: "http://localhost:3000"
-                                    })}
+                                    onClick={async () => {
+                                        try {
+                                            await authClient.signIn.social({
+                                                provider: "github",
+                                                callbackURL: process.env.NEXT_PUBLIC_APP_URL,
+                                            })
+                                        } catch (err) {
+                                            setError('Something went wrong. Please try again!')
+                                            console.error(err)
+                                        }
+                                    }}
                                 >
                                     <Image src={"/github.svg"} alt="Github" height={16} width={16} className="size-4 dark:invert" />
                                     Continue With GitHub

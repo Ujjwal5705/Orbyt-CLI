@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function Home() {
   const { data, isPending } = authClient.useSession()
@@ -65,7 +66,10 @@ export default function Home() {
             onClick={() =>
               authClient.signOut({
                 fetchOptions: {
-                  onError: (ctx) => console.log(ctx),
+                  onError: (ctx) => {
+                    console.log(ctx)
+                    toast.error("Sign out failed, Please try again!")
+                  },
                   onSuccess: () => router.push("/sign-in"),
                 },
               })
