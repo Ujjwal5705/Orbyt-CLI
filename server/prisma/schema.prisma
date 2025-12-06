@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -37,6 +38,7 @@ model Session {
 
   @@unique([token])
   @@map("session")
+  @@index([userId])
 }
 
 model Account {
@@ -56,6 +58,7 @@ model Account {
   updatedAt             DateTime  @updatedAt
 
   @@map("account")
+  @@index([userId])
 }
 
 model Verification {
@@ -67,6 +70,7 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+  @@index([identifier])
 }
 
 model DeviceCode {
@@ -85,26 +89,25 @@ model DeviceCode {
 }
 
 model Conversation {
-  id  String @id @default(cuid())
-  userId String
-  title  String?
-  mode  String @default("chat") // chat , tool , agent
+  id        String   @id @default(cuid())
+  userId    String
+  title     String?
+  mode      String   @default("chat")
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages  Message[]
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
 
 }
 
 model Message {
-  id             String   @id @default(cuid())
+  id             String       @id @default(cuid())
   conversationId String
-  role           String   // user, assistant, system, tool
-  content        String   // JSON string for complex content
-  createdAt      DateTime @default(now())
-  
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  
+  role           String
+  content        String
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
   @@index([conversationId])
 }
