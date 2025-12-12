@@ -5,6 +5,7 @@ import { getStoredToken } from "../../../../lib/token.js"
 import prisma from "../../../../lib/db.js"
 import { select } from "@clack/prompts"
 import { startChat } from "../../chat/chat-with-ai.js"
+import { startToolChat } from "../../chat/chat-with-ai-tool.js"
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -39,8 +40,7 @@ const wakeUpAction = async() => {
                     image:true
                 }
             })
-            break; 
-
+            break;
         } catch (error) {
             if (attempt === MAX_RETRIES) {
                 spinner.error("Failed to connect to database after multiple attempts.")
@@ -87,7 +87,7 @@ const wakeUpAction = async() => {
             startChat()
             break
         case "tool":
-            console.log(chalk.green("Tool calling is selected \n"))
+            startToolChat()
             break
         case "agent":
             console.log(chalk.yellow("Agentic mode coming soon... \n"))
