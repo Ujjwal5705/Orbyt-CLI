@@ -11,7 +11,7 @@ Unlike simple "chat" wrappers, Orbyt functions as a **Stateful Control Plane** f
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 Orbyt acts as a central orchestrator between the user, the AI model, and the local system. The following diagram illustrates the high-level data flow and component interaction:
 
@@ -43,7 +43,7 @@ graph TD
     LLM -->|Final Response| CLI
 ```
 
-## 🔄 The Agentic Workflow (ReAct Loop)
+## The Agentic Workflow (ReAct Loop)
 
 To ensure reliability, Orbyt uses a recursive "Reason + Act" loop. It validates every AI-generated argument against a Zod Schema before execution, creating a self-healing error loop.
 
@@ -76,7 +76,7 @@ sequenceDiagram
     L-->>U: "I have created the component."
 ```
 
-## 🔐 Authentication (RFC 8628)
+## Authentication (RFC 8628)
 
 Orbyt relies on a secure, headless authentication flow to manage user sessions without storing sensitive credentials in plain text. The specific flow for session authentication is detailed below:
 
@@ -113,14 +113,14 @@ graph TD
 ```
 
 ## Key Features
-- 🧠 Recursive Reasoning Loop: Implements a while(!task_complete) ReAct pattern, allowing the agent to plan, execute, observe, and correct its own actions.
-- 🛡️ Type-Safe Tooling: Uses Zod schema validation to ensure the LLM outputs strictly typed arguments for file system operations and code execution.
-- 💾 State Rehydration: "Rehydrates" conversation history from PostgreSQL on every boot, allowing for persistent context across days or weeks.
-- 🔌 Headless Security: Decouples authentication from the terminal using the OAuth Device Flow.
-- ⚡ Real-Time Web Access: Integrated Google Search tool for fetching up-to-date documentation and libraries.
+- Recursive Reasoning Loop: Implements a while(!task_complete) ReAct pattern, allowing the agent to plan, execute, observe, and correct its own actions.
+- Type-Safe Tooling: Uses Zod schema validation to ensure the LLM outputs strictly typed arguments for file system operations and code execution.
+- State Rehydration: "Rehydrates" conversation history from PostgreSQL on every boot, allowing for persistent context across days or weeks.
+- Headless Security: Decouples authentication from the terminal using the OAuth Device Flow.
+- Real-Time Web Access: Integrated Google Search tool for fetching up-to-date documentation and libraries.
 
 
-## 🛠️ Tech Stack
+## Tech Stack
 | Component | Technology | Description |
 | :--- | :--- | :--- |
 | **Runtime** | Node.js (v18+) | Core event loop and process management |
@@ -132,7 +132,7 @@ graph TD
 | **Validation** | Zod | Runtime type checking for LLM outputs |
 
 
-## 💻 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 * **Node.js** v18+
@@ -176,3 +176,48 @@ GOOGLE_GENERATIVE_AI_API_KEY="your_google_gemini_api_key"
 ORBYT_MODEL="gemini-1.5-flash"
 ```
 
+### 4. Database Migration
+Initialize the PostgreSQL schema:
+
+```Bash
+npx prisma migrate dev --name init
+```
+
+### 5. Link CLI
+Make the orbyt command available globally:
+
+```Bash
+npm link
+```
+
+## Usage Guide
+
+### 1. Authentication
+Initialize the secure session. This command will prompt you to open your browser to authenticate via GitHub/Google.
+
+```bash
+orbyt auth login
+```
+Follow the on-screen prompt to complete the OAuth flow in your browser.
+
+### 2. Interactive Mode (The Core)
+Once logged in, wake up Orbyt to enter the main interactive menu.
+
+```Bash
+orbyt wakeup
+```
+You will be presented with three powerful modes:
+
+### Chat with AI:
+
+- Standard context-aware chat for debugging, brainstorming, and pair programming.
+
+### Tool Calling:
+
+- Google Search: Fetch real-time data from the web.
+- Code Executor: Write and execute code safely in the local environment.
+- URL Context: Scrape and analyze specific documentation URLs.
+
+### Agent Calling:
+
+- Fully autonomous mode. Give Orbyt a high-level goal (e.g., "Build a Todo App"), and it will plan, code, and refine the solution iteratively.
