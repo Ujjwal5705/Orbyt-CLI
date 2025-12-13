@@ -1,23 +1,23 @@
-# 🪐 Orbit: The Autonomous AI Agent
+# 🪐 Orbyt: The Autonomous AI Agent
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-green)
 ![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?logo=postgresql&logoColor=white)
 ![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini-8E75B2)
 
-**Orbit** is a production-grade autonomous CLI agent designed to bridge the gap between stochastic LLMs and deterministic runtime environments.
+**Orbyt** is a production-grade autonomous CLI agent designed to bridge the gap between stochastic LLMs and deterministic runtime environments.
 
-Unlike simple "chat" wrappers, Orbit functions as a **Stateful Control Plane** for Google Gemini, capable of complex reasoning, recursive tool execution, and long-term memory via PostgreSQL. It implements the **RFC 8628 OAuth 2.0 Device Authorization Grant** for secure, headless authentication.
+Unlike simple "chat" wrappers, Orbyt functions as a **Stateful Control Plane** for Google Gemini, capable of complex reasoning, recursive tool execution, and long-term memory via PostgreSQL. It implements the **RFC 8628 OAuth 2.0 Device Authorization Grant** for secure, headless authentication.
 
 ---
 
 ## 🏗️ System Architecture
 
-Orbit acts as a central orchestrator between the user, the AI model, and the local system. The following diagram illustrates the high-level data flow and component interaction:
+Orbyt acts as a central orchestrator between the user, the AI model, and the local system. The following diagram illustrates the high-level data flow and component interaction:
 
 ```mermaid
 graph TD
-    User((User)) -->|Input| CLI[Orbit CLI / Commander.js]
+    User((User)) -->|Input| CLI[Orbyt CLI / Commander.js]
     CLI -->|Auth Check| OAuth[OAuth 2.0 Device Flow]
     OAuth -->|Token Exchange| GCloud[Google Cloud Auth]
     
@@ -45,7 +45,7 @@ graph TD
 
 ## 🔄 The Agentic Workflow (ReAct Loop)
 
-To ensure reliability, Orbit uses a recursive "Reason + Act" loop. It validates every AI-generated argument against a Zod Schema before execution, creating a self-healing error loop.
+To ensure reliability, Orbyt uses a recursive "Reason + Act" loop. It validates every AI-generated argument against a Zod Schema before execution, creating a self-healing error loop.
 
 ```mermaid
 sequenceDiagram
@@ -78,7 +78,7 @@ sequenceDiagram
 
 ## 🔐 Authentication (RFC 8628)
 
-Orbit relies on a secure, headless authentication flow to manage user sessions without storing sensitive credentials in plain text. The specific flow for session authentication is detailed below:
+Orbyt relies on a secure, headless authentication flow to manage user sessions without storing sensitive credentials in plain text. The specific flow for session authentication is detailed below:
 
 ```mermaid
 graph TD
@@ -111,3 +111,68 @@ graph TD
     User ~~~ Auth
     Info ~~~ Auth
 ```
+
+## Key Features
+- 🧠 Recursive Reasoning Loop: Implements a while(!task_complete) ReAct pattern, allowing the agent to plan, execute, observe, and correct its own actions.
+- 🛡️ Type-Safe Tooling: Uses Zod schema validation to ensure the LLM outputs strictly typed arguments for file system operations and code execution.
+- 💾 State Rehydration: "Rehydrates" conversation history from PostgreSQL on every boot, allowing for persistent context across days or weeks.
+- 🔌 Headless Security: Decouples authentication from the terminal using the OAuth Device Flow.
+- ⚡ Real-Time Web Access: Integrated Google Search tool for fetching up-to-date documentation and libraries.
+
+
+## 🛠️ Tech Stack
+| Component | Technology | Description |
+| :--- | :--- | :--- |
+| **Runtime** | Node.js (v18+) | Core event loop and process management |
+| **Inference** | Google Gemini 1.5 Pro | The reasoning engine |
+| **Orchestration** | Vercel AI SDK | Tool calling and stream management |
+| **Database** | PostgreSQL | Long-term vector/text storage |
+| **ORM** | Prisma | Schema management and type-safe queries |
+| **CLI Framework** | Commander.js | Command routing and help generation |
+| **Validation** | Zod | Runtime type checking for LLM outputs |
+
+
+## 💻 Installation & Setup
+
+### Prerequisites
+* **Node.js** v18+
+* **PostgreSQL** (Local or Cloud)
+* **Google Cloud Project** (for Gemini API)
+
+### 1. Fork the Repository
+Click the **Fork** button in the top-right corner of this page to create your own copy of the repository.
+
+### 2. Clone Your Fork
+Clone the repository from your own GitHub account:
+
+```bash
+# Replace 'YOUR_USERNAME' with your actual GitHub username
+git clone https://github.com/YOUR_USERNAME/orbyt-cli.git
+cd orbyt-cli
+npm install
+```
+
+### 3. Environment Variables
+Create a .env file in the root directory:
+
+```bash
+PORT=3005
+
+# Database (PostgreSQL / Neon)
+DATABASE_URL="postgresql://user:password@host-url/neondb?sslmode=require"
+
+# Better Auth 
+BETTER_AUTH_SECRET="your_generated_secret_here"
+BETTER_AUTH_URL="http://localhost:3005"
+
+# GitHub OAuth
+GITHUB_CLIENT_ID="your_github_client_id"
+GITHUB_CLIENT_SECRET="your_github_client_secret"
+
+ALLOWED_ORIGINS="http://localhost:3000"
+
+# AI Configuration
+GOOGLE_GENERATIVE_AI_API_KEY="your_google_gemini_api_key"
+ORBYT_MODEL="gemini-1.5-flash"
+```
+
