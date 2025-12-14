@@ -199,7 +199,7 @@ npm link
 Initialize the secure session. This command will prompt you to open your browser to authenticate via GitHub/Google.
 
 ```bash
-orbyt auth login
+orbyt login
 ```
 Follow the on-screen prompt to complete the OAuth flow in your browser.
 
